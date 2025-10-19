@@ -44,7 +44,12 @@ class _Ejercicio11State extends State<Ejercicio11View> {
     double spaceSize = 12;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Ejercicio 11'),
+        backgroundColor: Color.fromARGB(255, 137, 138, 196),
+        foregroundColor: Colors.white,
+        centerTitle: true,
+      ),
       body: Padding(
         padding: EdgeInsetsGeometry.all(16),
         child: Column(
