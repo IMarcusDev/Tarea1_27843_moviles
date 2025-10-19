@@ -1,0 +1,2 @@
+// Disponemos de una máquina que puede dar vuelto con 5 tipos de monedas distintas: $2, $1, $0.50, $0.25, $0.10.
+// Realizar el programa que, dados el precio del artículo y la cantidad entregada por el consumidor, nos indique el vuelto a entregar empleando el menor número posible de monedas.
