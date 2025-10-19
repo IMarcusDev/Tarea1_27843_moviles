@@ -54,7 +54,7 @@ class _Ejercicio11State extends State<Ejercicio11View> {
         padding: EdgeInsetsGeometry.all(16),
         child: Column(
           children: [
-            Text('Ingrese el precio del nuevo producto: ', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),),
+            Text('Ingrese el precio del nuevo producto: ', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
 
             SizedBox(height: spaceSize,),
 
@@ -78,7 +78,7 @@ class _Ejercicio11State extends State<Ejercicio11View> {
 
             SizedBox(height: spaceSize,),
 
-            Text('Total: \$${total.toStringAsFixed(2)}'),
+            Text('Total: \$${total.toStringAsFixed(2)}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
           ],
         )
       ),
