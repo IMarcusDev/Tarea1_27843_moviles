@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tarea1_application/screens/ej11.dart';
+import 'package:tarea1_application/screens/ej12.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: Ejercicio11View(),
+      home: Ejercicio12View(),
     );
   }
 }
