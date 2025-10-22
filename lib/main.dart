@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tarea1_application/screens/ej12.dart';
+import 'package:tarea1_application/screens/main_menu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,8 +31,9 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: Ejercicio12View(),
+  // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+  // Pantalla principal con enlaces a los ejercicios
+  home: const MainMenuScreen(),
     );
   }
 }
