@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class DeterminarAnioBisiesto extends StatefulWidget {
   @override
@@ -13,9 +14,25 @@ class _DeterminarAnioBisiestoPageState extends State<DeterminarAnioBisiesto> {
   String respuesta = "";
 
   void procesarAnio() {
+    if (anioCtrl.text.isEmpty) {
+      setState(() {
+        respuesta = "El campo esta vacio, por favor ingrese un año";
+      });
+      return;
+    }
+
     final anio = int.tryParse(anioCtrl.text) ?? 0;
 
+    if (anio <= 0 || anio > 9999) {
+      setState(() {
+        respuesta = "Por favor ingresa un año en el rango de 1 - 9999";
+      });
+      return;
+    }
+
     setState(() {
+      esBisiesto = false;
+
       if (anio % 4 == 0) {
         esBisiesto = true;
         if (anio % 100 == 0 && anio % 400 != 0) {
@@ -75,7 +92,7 @@ class _DeterminarAnioBisiestoPageState extends State<DeterminarAnioBisiesto> {
             SizedBox(height: 12),
 
             Text(
-              'Ingresa un año para verificar si es bisiesto',
+              'Ingresa un año valido para verificar si es bisiesto, sino se tomará como 0',
               style: TextStyle(fontSize: 17, color: Color(0xFFA2AADB)),
               textAlign: TextAlign.center,
             ),
@@ -85,6 +102,9 @@ class _DeterminarAnioBisiestoPageState extends State<DeterminarAnioBisiesto> {
             TextField(
               controller: anioCtrl,
               keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,

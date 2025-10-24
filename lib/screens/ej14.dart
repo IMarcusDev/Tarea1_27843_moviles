@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class DeterminarNumeroPerfecto extends StatefulWidget {
   @override
@@ -13,8 +14,31 @@ class _DeterminarNumeroPerfectoPageState
   String divisoresTexto = "";
 
   void procesarNumero() {
+    if (numeroCtrl.text.isEmpty) {
+      setState(() {
+        respuesta =
+            "El campo se encuentra vacio, por favor ingresar un numero mayor a uno";
+      });
+      return;
+    }
+
     final numero = int.tryParse(numeroCtrl.text) ?? 0;
-    !esPerfecto;
+
+    if (numero <= 1) {
+      setState(() {
+        respuesta = "Por favor ingresa un número mayor a uno";
+        divisoresTexto = "";
+      });
+      return;
+    }
+
+    if (numero > 1000000) {
+      setState(() {
+        respuesta = "Por favor ingresa un número menor";
+        divisoresTexto = "";
+      });
+      return;
+    }
 
     int suma = 0;
     List<int> divisores = [];
@@ -43,7 +67,7 @@ class _DeterminarNumeroPerfectoPageState
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Número Perfecto', style: TextStyle(fontSize: 48)),
+        title: Text('Número Perfecto', style: TextStyle(fontSize: 32)),
         backgroundColor: Color(0xFF898AC4),
         foregroundColor: Colors.white,
         elevation: 0,
@@ -82,7 +106,7 @@ class _DeterminarNumeroPerfectoPageState
             SizedBox(height: 12),
 
             Text(
-              'Ingresa un número para verificar si es perfecto',
+              'Ingresa un número valido para verificar si es perfecto, sino se tomara como 0',
               style: TextStyle(fontSize: 17, color: Color(0xFFA2AADB)),
               textAlign: TextAlign.center,
             ),
@@ -92,6 +116,9 @@ class _DeterminarNumeroPerfectoPageState
             TextField(
               controller: numeroCtrl,
               keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,

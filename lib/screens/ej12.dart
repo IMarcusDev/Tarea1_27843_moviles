@@ -2,6 +2,7 @@
 // Realizar el programa que, dados el precio del artículo y la cantidad entregada por el consumidor, nos indique el vuelto a entregar empleando el menor número posible de monedas.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Ejercicio12View extends StatefulWidget {
   @override
@@ -10,23 +11,65 @@ class Ejercicio12View extends StatefulWidget {
 
 class _Ejercicio12State extends State<Ejercicio12View> {
   // { Centavos: Cantidad }
-  Map<int, int> vuelto = {
-    200: 0,
-    100: 0,
-    50: 0,
-    25: 0,
-    10: 0
-  };
+  Map<int, int> vuelto = {200: 0, 100: 0, 50: 0, 25: 0, 10: 0};
 
-  // Controlador
   final valueCtrl = TextEditingController();
-
+  String errorMessage = "";
   void clearVuelto() {
     setState(() {
       for (int cents in vuelto.keys) {
         vuelto[cents] = 0;
       }
+      errorMessage = "";
     });
+  }
+
+  void calcularVuelto() {
+    if (valueCtrl.text.isEmpty) {
+      setState(() {
+        clearVuelto();
+        errorMessage = "El campo esta vacío, por favor ingresa un monto";
+      });
+      return;
+    }
+
+    final value = double.tryParse(valueCtrl.text);
+
+    if (value == null) {
+      setState(() {
+        clearVuelto();
+        errorMessage =
+            "El monto ingresado no es válido, por favor ingresa un número válido";
+      });
+      return;
+    }
+
+    if (value <= 0) {
+      setState(() {
+        clearVuelto();
+        errorMessage = "El monto debe ser mayor que 0";
+      });
+      return;
+    }
+
+    if (value > 10000) {
+      setState(() {
+        clearVuelto();
+        errorMessage = "El monto es demasiado grande (máx: \$10,000)";
+      });
+      return;
+    }
+
+    int precioCents = (value * 100).round();
+    if (precioCents % 10 != 0) {
+      setState(() {
+        clearVuelto();
+        errorMessage = "El monto debe ser múltiplo de \$0.10";
+      });
+      return;
+    }
+
+    setVueltoCants(value);
   }
 
   void setVueltoCants(double value) {
@@ -35,7 +78,8 @@ class _Ejercicio12State extends State<Ejercicio12View> {
     clearVuelto();
 
     setState(() {
-      if (precioCents % 5 == 0 && precioCents % 10 != 0) {  // Por si termina en 5
+      if (precioCents % 5 == 0 && precioCents % 10 != 0) {
+        // Por si termina en 5
         vuelto[25] = (vuelto[25] ?? 0) + 1;
         precioCents -= 25;
       }
@@ -100,7 +144,10 @@ class _Ejercicio12State extends State<Ejercicio12View> {
 
             TextField(
               controller: valueCtrl,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+              ],
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
@@ -119,6 +166,16 @@ class _Ejercicio12State extends State<Ejercicio12View> {
               ),
             ),
 
+            if (errorMessage.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Text(
+                  errorMessage,
+                  style: TextStyle(fontSize: 14, color: Colors.red[700]),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
             SizedBox(height: 24),
 
             Container(
@@ -132,7 +189,7 @@ class _Ejercicio12State extends State<Ejercicio12View> {
               ),
               child: ElevatedButton(
                 onPressed: () {
-                  setVueltoCants(double.tryParse(valueCtrl.text) ?? 0);
+                  calcularVuelto();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
@@ -196,11 +253,7 @@ class _Ejercicio12State extends State<Ejercicio12View> {
         SizedBox(width: 8),
         Text(
           'Monedas de $label: $cantidad',
-          style: TextStyle(
-            fontSize: 16,
-            color: Color(0xFF898AC4),
-            height: 1.5,
-          ),
+          style: TextStyle(fontSize: 16, color: Color(0xFF898AC4), height: 1.5),
         ),
       ],
     );

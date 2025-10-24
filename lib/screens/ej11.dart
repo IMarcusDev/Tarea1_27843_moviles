@@ -2,6 +2,7 @@
 // Al final del día le indica a su supervisor cuánto fue lo que cobró en total a todos los clientes que pasaron por su caja.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Ejercicio11View extends StatefulWidget {
   const Ejercicio11View({super.key});
@@ -15,8 +16,8 @@ class _Ejercicio11State extends State<Ejercicio11View> {
 
   double total = 0;
 
-  // Text Controllers
   final preciosCtrl = TextEditingController();
+  String errorMessage = "";
 
   double getTotal() {
     double total = 0;
@@ -24,19 +25,47 @@ class _Ejercicio11State extends State<Ejercicio11View> {
     for (double p in precios) {
       total += p;
     }
-
-    setState(() {
-      this.total = total;
-    });
-
     return total;
   }
 
-  // Añadir precio
-  double addProduct(double price) {
-    precios.add(price);
-    preciosCtrl.clear();  // Limpiar campo después de añadir
-    return getTotal();
+  void addProduct() {
+    if (preciosCtrl.text.isEmpty) {
+      setState(() {
+        errorMessage =
+            "El campo se encuentra vacío, por favor ingresa un precio";
+      });
+      return;
+    }
+
+    final price = double.tryParse(preciosCtrl.text);
+
+    if (price == null) {
+      setState(() {
+        errorMessage = "Por favor ingresa un número válido";
+      });
+      return;
+    }
+
+    if (price <= 0) {
+      setState(() {
+        errorMessage = "El precio debe ser mayor que 0";
+      });
+      return;
+    }
+
+    if (price > 100000) {
+      setState(() {
+        errorMessage = "El precio es demasiado alto (máx: \$100,000)";
+      });
+      return;
+    }
+
+    setState(() {
+      precios.add(price);
+      total = getTotal();
+      errorMessage = "";
+      preciosCtrl.clear();
+    });
   }
 
   @override
@@ -92,7 +121,10 @@ class _Ejercicio11State extends State<Ejercicio11View> {
 
             TextField(
               controller: preciosCtrl,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+              ],
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
@@ -124,7 +156,7 @@ class _Ejercicio11State extends State<Ejercicio11View> {
               ),
               child: ElevatedButton(
                 onPressed: () {
-                  addProduct(double.tryParse(preciosCtrl.text) ?? 0);
+                  addProduct();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
@@ -147,6 +179,35 @@ class _Ejercicio11State extends State<Ejercicio11View> {
             ),
 
             SizedBox(height: 24),
+
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Color(0xFFFFF2E0),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.shopping_basket,
+                    color: Color(0xFF898AC4),
+                    size: 20,
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    '${precios.length} producto${precios.length != 1 ? 's' : ''} agregado${precios.length != 1 ? 's' : ''}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF898AC4),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 16),
 
             Container(
               padding: EdgeInsets.all(20),
